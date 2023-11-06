@@ -111,6 +111,89 @@ window.addEventListener("load", () => {
         carregarImagem(i);
     };
 
+    function gerarHistograma() {
+
+        // Dados do Canvas (no momento redundante)
+        const imagem = document.getElementById("imgOne");
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+    
+        // Redimensionando a imagem para se ajustar ao tamanho do canvas
+        canvas.width = imagem.width;
+        canvas.height = imagem.height;
+        ctx.drawImage(imagem, 0, 0, canvas.width, canvas.height);
+    
+        // Dados dos pixels da imagem no canvas
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+    
+        // Inverte a imagem
+        for (let i = 0; i < imageData.data.length; i += 4) {
+            imageData.data[i] = 255 - imageData.data[i]; // Vermelho
+            imageData.data[i + 1] = 255 - imageData.data[i + 1]; // Verde
+            imageData.data[i + 2] = 255 - imageData.data[i + 2]; // Azul
+        }
+    
+        // Imagem invertida no canvas
+        ctx.putImageData(imageData, 0, 0);
+    
+        // Contabilizando os valores de intensidade
+        const intensidadeCount = new Array(256).fill(0);
+    
+        // Percorrendo todos os pixels e contabilizando as intensidades
+        for (let i = 0; i < imageData.data.length; i += 4) {
+            const intensity = Math.floor((
+                imageData.data[i] +
+                imageData.data[i + 1] +
+                imageData.data[i + 2]
+            ) / 3);
+            intensidadeCount[intensity]++;
+        }
+    
+        // Valores a serem excluídos de X (255 e 254)
+        const exclusao = [255, 254];
+    
+        // Config do Plot
+        const data = {
+            labels: [],
+            datasets: [{
+                label: 'Histograma de Valores das Intensidades dos Pixels',
+                data: [],
+                backgroundColor: 'rgba(75, 192, 192, 0.2)',
+                borderColor: 'rgba(75, 192, 192, 1)',
+                borderWidth: 1
+            }]
+        };
+    
+        // Remove valores nulos (contagem zero) e valores de exclusão do vetor de intensidade
+        for (let i = 0; i < 256; i++) {
+            if (intensidadeCount[i] !== 0 && !exclusao.includes(i)) {
+                data.labels.push(i);
+                data.datasets[0].data.push(intensidadeCount[i]);
+            }
+        }
+    
+        // Configurações do gráfico
+        const config = {
+            type: 'bar',
+            data: data,
+            options: {
+                scales: {
+                    y: {
+                        beginAtZero: true
+                    }
+                }
+            }
+        };
+    
+        // Obtém o elemento canvas para o gráfico
+        const histogramCanvas = document.getElementById("histogramCanvas");
+    
+        // Cria e exibe o gráfico
+        new Chart(histogramCanvas, config);
+    }
+    
+
+    
     // Função de Animação
     async function animate(timeStamp) {
         const delta = timeStamp - lastTime;
@@ -120,7 +203,8 @@ window.addEventListener("load", () => {
 
             //console.log(currentCtrl)
             plotImagesFromArray(currentCtrl);
-
+        
+        
             // Condições de Loop Continuo
             currentCtrl++;
             if (currentCtrl >= imageArray.length) currentCtrl = 0;
@@ -131,8 +215,14 @@ window.addEventListener("load", () => {
 
         requestAnimationFrame(animate);
     };
+    
+    // Chamando a função gerarHistograma
+    gerarHistograma();
 
+    // Chamando a função de Animação
     animate(0);
+
+    // GoGoGo!
     removerLoading();
 
 });

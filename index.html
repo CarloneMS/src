@@ -9,8 +9,7 @@
     <meta name="theme-color" content="#3F394F">
     <link rel="stylesheet" href="index.css" />
 
-
-
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
 </head>
 
 <body>
@@ -46,14 +45,22 @@
 
     <canvas id="canvasOculto" style="display: none;"></canvas>
 
-    <div id="mainDiv">
-        <div id="divOne" class="item">
-            <img id="imgOne" src="img/imgOne.png" />
+    <div id="core">
+        <div id="mainDiv">
+            <div id="divOne" class="item">
+                <img id="imgOne" src="img/imgOne.png" />
+            </div>
+            <div id="divTwo" class="item">
+                <canvas id="canvas"></canvas>
+            </div>
         </div>
-        <div id="divTwo" class="item">
-            <canvas id="canvas"></canvas>
+        
+        <div id="divHistogram" class="item">
+            <canvas id="histogramCanvas" width="400" height="200"></canvas>
         </div>
+
     </div>
+
 
     <script type="module" src="index.js"></script>
 
