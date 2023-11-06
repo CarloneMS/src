@@ -9,10 +9,42 @@
     <meta name="theme-color" content="#3F394F">
     <link rel="stylesheet" href="index.css" />
 
+
+
 </head>
 
 <body>
-    
+    <script>
+        // Frescura para deixar o loading mais agradavel 
+        function exibirLoading2() {
+
+            // Crie um elemento div para o texto "Loading"
+            const loadingDiv = document.createElement("div");
+            loadingDiv.textContent = "Now Loading ...";
+            loadingDiv.id = "loadingDiv";
+
+            // Estilize o elemento div
+            loadingDiv.style.position = "fixed";
+            loadingDiv.style.top = "0";
+            loadingDiv.style.left = "0";
+            loadingDiv.style.width = "100%";
+            loadingDiv.style.height = "100%";
+            loadingDiv.style.backgroundColor = "rgba(241, 243, 247, 1)";
+            loadingDiv.style.color = "black";
+            loadingDiv.style.fontSize = "48px";
+            loadingDiv.style.display = "flex";
+            loadingDiv.style.justifyContent = "center";
+            loadingDiv.style.alignItems = "center";
+            loadingDiv.style.zIndex = "9999";
+            loadingDiv.style.color = "rgb(70, 70, 70)";
+
+            // Adicione o elemento div ao corpo do documento
+            document.body.appendChild(loadingDiv);
+        }
+        exibirLoading2()
+    </script>
+
+    <canvas id="canvasOculto" style="display: none;"></canvas>
 
     <div id="mainDiv">
         <div id="divOne" class="item">
@@ -22,8 +54,6 @@
             <canvas id="canvas"></canvas>
         </div>
     </div>
-
-
 
     <script type="module" src="index.js"></script>
 
