@@ -103,7 +103,7 @@ window.addEventListener("load", () => {
     let timer = 0;
     let lastTime = 0;
     const initialValue = 230;
-    const finalValue   = 170;
+    const finalValue = 170;
     let currentCtrl = 0;
 
     // Loop de Geração de Img
@@ -117,28 +117,28 @@ window.addEventListener("load", () => {
         const imagem = document.getElementById("imgOne");
         const canvas = document.createElement("canvas");
         const ctx = canvas.getContext("2d");
-    
+
         // Redimensionando a imagem para se ajustar ao tamanho do canvas
         canvas.width = imagem.width;
         canvas.height = imagem.height;
         ctx.drawImage(imagem, 0, 0, canvas.width, canvas.height);
-    
+
         // Dados dos pixels da imagem no canvas
         const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
-    
+
         // Inverte a imagem
         for (let i = 0; i < imageData.data.length; i += 4) {
             imageData.data[i] = 255 - imageData.data[i]; // Vermelho
             imageData.data[i + 1] = 255 - imageData.data[i + 1]; // Verde
             imageData.data[i + 2] = 255 - imageData.data[i + 2]; // Azul
         }
-    
+
         // Imagem invertida no canvas
         ctx.putImageData(imageData, 0, 0);
-    
+
         // Contabilizando os valores de intensidade
         const intensidadeCount = new Array(256).fill(0);
-    
+
         // Percorrendo todos os pixels e contabilizando as intensidades
         for (let i = 0; i < imageData.data.length; i += 4) {
             const intensity = Math.floor((
@@ -148,10 +148,10 @@ window.addEventListener("load", () => {
             ) / 3);
             intensidadeCount[intensity]++;
         }
-    
+
         // Valores a serem excluídos de X (255 e 254)
         const exclusao = [255, 254];
-    
+
         // Config do Plot
         const data = {
             labels: [],
@@ -163,7 +163,7 @@ window.addEventListener("load", () => {
                 borderWidth: 1
             }]
         };
-    
+
         // Remove valores nulos (contagem zero) e valores de exclusão do vetor de intensidade
         for (let i = 0; i < 256; i++) {
             if (intensidadeCount[i] !== 0 && !exclusao.includes(i)) {
@@ -171,7 +171,7 @@ window.addEventListener("load", () => {
                 data.datasets[0].data.push(intensidadeCount[i]);
             }
         }
-    
+
         // Configurações do gráfico
         const config = {
             type: 'bar',
@@ -184,40 +184,60 @@ window.addEventListener("load", () => {
                 }
             }
         };
-    
+
         // Obtém o elemento canvas para o gráfico
         const histogramCanvas = document.getElementById("histogramCanvas");
-    
-        // Cria e exibe o gráfico
-        new Chart(histogramCanvas, config);
-    }
-    
 
-    
-    // Função de Animação
-    async function animate(timeStamp) {
+        // Cria e exibe o gráfico
+        let myChart = new Chart(histogramCanvas, config);
+       
+        return myChart;
+    }
+
+
+    // Função para atualizar a cor do valor em x no gráfico
+    function atualizarCorDoGrafico(myChart,valorX) {
+
+        // Conjunto de dados no gráfico
+        const dataset = myChart.data.datasets[0]; 
+        const data = myChart.data;
+
+        // Limpando a cor de fundo do dataset para que todos os valores tenham a cor padrão
+        dataset.backgroundColor = data.labels.map(label => 'rgba(75, 192, 192, 0.2)');
+
+        // Mudando a cor do valor em x
+        if (valorX >= 0 && valorX < data.labels.length) {
+            dataset.backgroundColor[valorX] = 'red'; // Altere a cor para a cor desejada
+        }
+
+        // Atualizando o gráfico no Chart
+        myChart.update();
+    }
+
+    // Dentro da função animate
+    function animate(timeStamp) {
         const delta = timeStamp - lastTime;
         lastTime = timeStamp;
 
         if (timer > timeInterval) {
-
-            //console.log(currentCtrl)
             plotImagesFromArray(currentCtrl);
-        
-        
-            // Condições de Loop Continuo
+
+            // Chamando a função para atualizar a cor do gráfico ERRO
+            atualizarCorDoGrafico(myChart, currentCtrl); 
+
             currentCtrl++;
             if (currentCtrl >= imageArray.length) currentCtrl = 0;
             timer = 0;
         } else {
             timer += delta;
-        };
+        }
 
         requestAnimationFrame(animate);
-    };
-    
+    }
+
+
     // Chamando a função gerarHistograma
-    gerarHistograma();
+    const myChart = gerarHistograma();
 
     // Chamando a função de Animação
     animate(0);
