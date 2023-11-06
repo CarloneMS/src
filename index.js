@@ -97,20 +97,6 @@ window.addEventListener("load", () => {
         ctx.putImageData(imageArray[n], 0, 0);
     };
 
-    // Ctes de Animação
-    const fps = 20;
-    const timeInterval = 1000 / fps;
-    let timer = 0;
-    let lastTime = 0;
-    const initialValue = 230;
-    const finalValue = 170;
-    let currentCtrl = 0;
-
-    // Loop de Geração de Img
-    for (let i = initialValue; i >= finalValue; i--) {
-        carregarImagem(i);
-    };
-
     function gerarHistograma() {
 
         // Dados do Canvas (no momento redundante)
@@ -190,16 +176,16 @@ window.addEventListener("load", () => {
 
         // Cria e exibe o gráfico
         let myChart = new Chart(histogramCanvas, config);
-       
+
         return myChart;
     }
 
 
     // Função para atualizar a cor do valor em x no gráfico
-    function atualizarCorDoGrafico(myChart,valorX) {
+    function atualizarCorDoGrafico(myChart, valorX) {
 
         // Conjunto de dados no gráfico
-        const dataset = myChart.data.datasets[0]; 
+        const dataset = myChart.data.datasets[0];
         const data = myChart.data;
 
         // Limpando a cor de fundo do dataset para que todos os valores tenham a cor padrão
@@ -214,6 +200,22 @@ window.addEventListener("load", () => {
         myChart.update();
     }
 
+    // Ctes de Animação
+    const fps = 20;
+    const timeInterval = 1000 / fps;
+    let timer = 0;
+    let lastTime = 0;
+    const initialValue = 230;
+    const finalValue = 150;
+    let currentCtrl = 0;
+    let infoVector = [];
+
+    // Loop de Geração de Img
+    for (let i = initialValue; i >= finalValue; i--) {
+        carregarImagem(i);
+        infoVector.push(i)
+    };
+
     // Dentro da função animate
     function animate(timeStamp) {
         const delta = timeStamp - lastTime;
@@ -223,7 +225,7 @@ window.addEventListener("load", () => {
             plotImagesFromArray(currentCtrl);
 
             // Chamando a função para atualizar a cor do gráfico ERRO
-            atualizarCorDoGrafico(myChart, currentCtrl); 
+            // atualizarCorDoGrafico(myChart, currentCtrl);
 
             currentCtrl++;
             if (currentCtrl >= imageArray.length) currentCtrl = 0;
