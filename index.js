@@ -112,7 +112,7 @@ window.addEventListener("load", () => {
     };
 
     // Função de Animação
-    function animate(timeStamp) {
+    async function animate(timeStamp) {
         const delta = timeStamp - lastTime;
         lastTime = timeStamp;
 
@@ -132,8 +132,7 @@ window.addEventListener("load", () => {
         requestAnimationFrame(animate);
     };
 
-    removerLoading();
     animate(0);
-
+    removerLoading();
 
 });
